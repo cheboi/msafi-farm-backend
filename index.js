@@ -6,6 +6,7 @@ import helmet from "helmet";
 import productRoutes from "./routes/productRoutes.js";
 import productQuantityRoutes from "./routes/productQuantityRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
 
 dotenv.config();
 
@@ -20,8 +21,11 @@ app.use(express.json());
 
 // Routes
 app.use("/api/auth", authRoutes);
+
 app.use("/api/products", productRoutes);
 app.use("/api/products/quantity", productQuantityRoutes);
+
+app.use("/api/orders", orderRoutes);
 
 app.get("/", (req, res) => {
   res.send("M-Safi Farm API is running");
