@@ -18,3 +18,15 @@ export const createOrder = async (req, res) => {
   }
 };
 
+export const getAllOrders = async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT * FROM orders ORDER BY created_at DESC"
+    );
+    res.status(200).json(result.rows);
+  } catch (err) {
+    console.error("Error fetching orders:", err.message);
+    res.status(500).json({ error: "Server error while fetching orders" });
+  }
+};
+
