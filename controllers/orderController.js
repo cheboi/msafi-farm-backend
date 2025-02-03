@@ -30,3 +30,19 @@ export const getAllOrders = async (req, res) => {
   }
 };
 
+export const getOrderById = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const result = await pool.query(
+        "SELECT * FROM orders WHERE order_id = $1",
+        [id]
+      );
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: "Order not found" });
+      }
+      res.status(200).json(result.rows[0]);
+    } catch (err) {
+      console.error("Error fetching order:", err.message);
+      res.status(500).json({ error: "Server error while fetching order" });
+    }
+  };
