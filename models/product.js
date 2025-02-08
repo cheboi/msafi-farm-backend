@@ -35,3 +35,13 @@ export const deleteProduct = async (id) => {
   );
   return result.rows[0];
 };
+
+export const searchProducts = async (query) => {
+  const sqlQuery = `
+    SELECT * FROM products
+    WHERE name ILIKE $1 OR category ILIKE $1 OR description ILIKE $1
+  `;
+  const values = [`%${query}%`];
+  const result = await pool.query(sqlQuery, values);
+  return result.rows;
+};

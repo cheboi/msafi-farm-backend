@@ -63,3 +63,18 @@ export const deleteProduct = async (req, res) => {
     res.status(500).json({ error: "Server error while deleting product" });
   }
 };
+
+export const searchProducts = async (req, res) => {
+  const { q } = req.query;
+  if (!q)
+    return res
+      .status(400)
+      .json({ error: "Missing search query parameter (q)" });
+  try {
+    const products = await productModel.searchProducts(q);
+    res.status(200).json(products);
+  } catch (err) {
+    console.error("Error searching products:", err.message);
+    res.status(500).json({ error: "Server error while searching products" });
+  }
+};
