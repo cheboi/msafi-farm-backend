@@ -7,5 +7,6 @@ const router = express.Router();
 // router.use(verifyToken);
 router.post("/item", cartController.addItemToCart);
 router.get("/", cartController.getCart);
+router.put("/item/:cart_item_id", cartController.updateCartItem);s
 
 export default router;

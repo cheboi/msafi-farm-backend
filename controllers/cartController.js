@@ -28,3 +28,18 @@ export const addItemToCart = async (req, res) => {
     res.status(500).json({ error: "Server error while adding item to cart" });
   }
 };
+
+export const updateCartItem = async (req, res) => {
+  const { cart_item_id } = req.params;
+  const { quantity } = req.body;
+  try {
+    const updatedItem = await cartModel.updateCartItemQuantity(
+      cart_item_id,
+      quantity
+    );
+    res.status(200).json({ message: "Cart item updated", updatedItem });
+  } catch (err) {
+    console.error("Error updating cart item:", err.message);
+    res.status(500).json({ error: "Server error while updating cart item" });
+  }
+};

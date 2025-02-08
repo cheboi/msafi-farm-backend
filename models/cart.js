@@ -56,3 +56,11 @@ export const addCartItem = async (cart_id, product_id, quantity) => {
     return result.rows[0];
   }
 };
+
+export const updateCartItemQuantity = async (cart_item_id, quantity) => {
+  const result = await pool.query(
+    "UPDATE cart_items SET quantity = $1, updated_at = CURRENT_TIMESTAMP WHERE cart_item_id = $2 RETURNING *",
+    [quantity, cart_item_id]
+  );
+  return result.rows[0];
+};
