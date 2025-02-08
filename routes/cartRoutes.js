@@ -5,7 +5,7 @@ import * as cartController from "../controllers/cartController.js";
 const router = express.Router();
 
 // router.use(verifyToken);
-
+router.post("/item", cartController.addItemToCart);
 router.get("/", cartController.getCart);
 
 export default router;

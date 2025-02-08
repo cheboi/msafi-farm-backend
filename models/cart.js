@@ -34,3 +34,25 @@ export const getCartItemsByCartId = async (cart_id) => {
   );
   return result.rows;
 };
+
+export const addCartItem = async (cart_id, product_id, quantity) => {
+  const check = await pool.query(
+    "SELECT * FROM cart_items WHERE cart_id = $1 AND product_id = $2",
+    [cart_id, product_id]
+  );
+  if (check.rows.length > 0) {
+    const existing = check.rows[0];
+    const newQuantity = existing.quantity + quantity;
+    const result = await pool.query(
+      "UPDATE cart_items SET quantity = $1, updated_at = CURRENT_TIMESTAMP WHERE cart_item_id = $2 RETURNING *",
+      [newQuantity, existing.cart_item_id]
+    );
+    return result.rows[0];
+  } else {
+    const result = await pool.query(
+      "INSERT INTO cart_items (cart_id, product_id, quantity) VALUES ($1, $2, $3) RETURNING *",
+      [cart_id, product_id, quantity]
+    );
+    return result.rows[0];
+  }
+};

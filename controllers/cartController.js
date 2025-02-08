@@ -11,3 +11,20 @@ export const getCart = async (req, res) => {
     res.status(500).json({ error: "Server error while getting cart" });
   }
 };
+
+export const addItemToCart = async (req, res) => {
+  const user_id = req.user.user_id;
+  const { product_id, quantity } = req.body;
+  try {
+    const cart = await cartModel.getOrCreateCartByUserId(user_id);
+    const cartItem = await cartModel.addCartItem(
+      cart.cart_id,
+      product_id,
+      quantity
+    );
+    res.status(201).json({ message: "Item added to cart", cartItem });
+  } catch (err) {
+    console.error("Error adding item to cart:", err.message);
+    res.status(500).json({ error: "Server error while adding item to cart" });
+  }
+};
