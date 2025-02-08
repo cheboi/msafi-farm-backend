@@ -43,3 +43,26 @@ export const updateCartItem = async (req, res) => {
     res.status(500).json({ error: "Server error while updating cart item" });
   }
 };
+
+export const removeItemFromCart = async (req, res) => {
+  const { cart_item_id } = req.params;
+  try {
+    const removedItem = await cartModel.removeCartItem(cart_item_id);
+    res.status(200).json({ message: "Cart item removed", removedItem });
+  } catch (err) {
+    console.error("Error removing cart item:", err.message);
+    res.status(500).json({ error: "Server error while removing cart item" });
+  }
+};
+
+export const clearCartItems = async (req, res) => {
+  const user_id = req.params.user.user_id;
+  try {
+    const cart = await cartModel.getOrCreateCartByUserId(user_id);
+    const clearedItems = await cartModel.clearCart(cart.cart_id);
+    res.status(200).json({ message: "cart cleared", clearedItems });
+  } catch (err) {
+    console.error("Error clearing cart", err.message);
+    res.status(500).json({ error: "Server error while clearing cart" });
+  }
+};

@@ -64,3 +64,19 @@ export const updateCartItemQuantity = async (cart_item_id, quantity) => {
   );
   return result.rows[0];
 };
+
+export const removeCartItem = async (cart_item_id) => {
+  const result = await pool.query(
+    "DELETE FROM cart_items WHERE cart_item_id = $1 RETURNING *",
+    [cart_item_id]
+  );
+  return result.rows[0];
+};
+
+export const clearCart = async (cart_id) => {
+  const result = await pool.query(
+    "DELETE FROM cart_items WHERE cart_id = $1 RETURNING *",
+    [cart_id]
+  );
+  return result.rows;
+};
