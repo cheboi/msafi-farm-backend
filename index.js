@@ -8,6 +8,7 @@ import productQuantityRoutes from "./routes/productQuantityRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
+import shippingRoutes from "./routes/shippingRoutes.js";
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/products/quantity", productQuantityRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/cart", cartRoutes);
+app.use("/api/shipping", shippingRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
