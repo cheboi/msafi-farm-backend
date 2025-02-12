@@ -3,3 +3,4 @@ import * as shippingController from "../controllers/shippingController.js";
 import verifyToken from "../middleware/verifyToken.js";
 
 router.post("/", shippingController.createShipping);
+router.get("/:id", shippingController.getShippingById);
