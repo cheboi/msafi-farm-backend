@@ -1,29 +1,27 @@
-import pool from "../config/db.js";
+import * as orderModel from "../models/order.js";
 
 export const createOrder = async (req, res) => {
   try {
     const { user_id, total_price, status } = req.body;
-    const result = await pool.query(
-      `INSERT INTO orders (user_id, total_price, status) 
-             VALUES ($1, $2, $3) RETURNING *`,
-      [user_id, total_price, status || "pending"]
-    );
+    const newOrder = await orderModel.createOrder({
+      user_id,
+      total_price,
+      status,
+    });
     res.status(201).json({
       message: "Order created successfully",
-      order: result.rows[0],
+      order: newOrder,
     });
-  } catch (error) {
-    console.error("Error creating order", error.message);
-    res.status(500).json({ error: "SERVER ERROR WHILE Creating order" });
+  } catch (err) {
+    console.error("Error creating order:", err.message);
+    res.status(500).json({ error: "Server error while creating order" });
   }
 };
 
 export const getAllOrders = async (req, res) => {
   try {
-    const result = await pool.query(
-      "SELECT * FROM orders ORDER BY created_at DESC"
-    );
-    res.status(200).json(result.rows);
+    const orders = await orderModel.getAllOrders();
+    res.status(200).json(orders);
   } catch (err) {
     console.error("Error fetching orders:", err.message);
     res.status(500).json({ error: "Server error while fetching orders" });
@@ -31,16 +29,13 @@ export const getAllOrders = async (req, res) => {
 };
 
 export const getOrderById = async (req, res) => {
+  const { id } = req.params;
   try {
-    const { id } = req.params;
-    const result = await pool.query(
-      "SELECT * FROM orders WHERE order_id = $1",
-      [id]
-    );
-    if (result.rows.length === 0) {
+    const order = await orderModel.getOrderById(id);
+    if (!order) {
       return res.status(404).json({ error: "Order not found" });
     }
-    res.status(200).json(result.rows[0]);
+    res.status(200).json(order);
   } catch (err) {
     console.error("Error fetching order:", err.message);
     res.status(500).json({ error: "Server error while fetching order" });
@@ -48,19 +43,16 @@ export const getOrderById = async (req, res) => {
 };
 
 export const updateOrderStatus = async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
   try {
-    const { id } = req.params;
-    const { status } = req.body;
-    const result = await pool.query(
-      "UPDATE orders SET status = $1 WHERE order_id = $2 RETURNING *",
-      [status, id]
-    );
-    if (result.rows.length === 0) {
+    const updatedOrder = await orderModel.updateOrderStatus(id, status);
+    if (!updatedOrder) {
       return res.status(404).json({ error: "Order not found" });
     }
     res.status(200).json({
       message: "Order status updated successfully",
-      order: result.rows[0],
+      order: updatedOrder,
     });
   } catch (err) {
     console.error("Error updating order:", err.message);
@@ -69,18 +61,15 @@ export const updateOrderStatus = async (req, res) => {
 };
 
 export const deleteOrder = async (req, res) => {
+  const { id } = req.params;
   try {
-    const { id } = req.params;
-    const result = await pool.query(
-      "DELETE FROM orders WHERE order_id = $1 RETURNING *",
-      [id]
-    );
-    if (result.rows.length === 0) {
+    const deletedOrder = await orderModel.deleteOrder(id);
+    if (!deletedOrder) {
       return res.status(404).json({ error: "Order not found" });
     }
     res.status(200).json({
       message: "Order deleted successfully",
-      order: result.rows[0],
+      order: deletedOrder,
     });
   } catch (err) {
     console.error("Error deleting order:", err.message);

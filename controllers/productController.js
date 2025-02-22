@@ -25,9 +25,7 @@ export const getProductById = async (req, res) => {
   const { id } = req.params;
   try {
     const product = await productModel.getProductById(id);
-    if (!product) {
-      return res.status(404).json({ error: "Product not found" });
-    }
+    if (!product) return res.status(404).json({ error: "Product not found" });
     res.status(200).json(product);
   } catch (err) {
     console.error("Error fetching product:", err.message);
@@ -40,9 +38,8 @@ export const updateProduct = async (req, res) => {
   const product = req.body;
   try {
     const updatedProduct = await productModel.updateProduct(id, product);
-    if (!updatedProduct) {
+    if (!updatedProduct)
       return res.status(404).json({ error: "Product not found" });
-    }
     res.status(200).json(updatedProduct);
   } catch (err) {
     console.error("Error updating product:", err.message);
@@ -54,10 +51,14 @@ export const deleteProduct = async (req, res) => {
   const { id } = req.params;
   try {
     const deletedProduct = await productModel.deleteProduct(id);
-    if (!deletedProduct) {
+    if (!deletedProduct)
       return res.status(404).json({ error: "Product not found" });
-    }
-    res.status(200).json({ message: "Product deleted successfully" });
+    res
+      .status(200)
+      .json({
+        message: "Product deleted successfully",
+        product: deletedProduct,
+      });
   } catch (err) {
     console.error("Error deleting product:", err.message);
     res.status(500).json({ error: "Server error while deleting product" });
