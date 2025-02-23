@@ -53,12 +53,10 @@ export const deleteProduct = async (req, res) => {
     const deletedProduct = await productModel.deleteProduct(id);
     if (!deletedProduct)
       return res.status(404).json({ error: "Product not found" });
-    res
-      .status(200)
-      .json({
-        message: "Product deleted successfully",
-        product: deletedProduct,
-      });
+    res.status(200).json({
+      message: "Product deleted successfully",
+      product: deletedProduct,
+    });
   } catch (err) {
     console.error("Error deleting product:", err.message);
     res.status(500).json({ error: "Server error while deleting product" });
