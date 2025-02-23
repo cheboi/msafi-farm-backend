@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import helmet from "helmet";
+import passport from "passport";
 
 import productRoutes from "./routes/productRoutes.js";
 import productQuantityRoutes from "./routes/productQuantityRoutes.js";
@@ -9,6 +10,7 @@ import authRoutes from "./routes/authRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
 import shippingRoutes from "./routes/shippingRoutes.js";
+import oauthRoutes from "./routes/oauthRoutes.js";
 
 dotenv.config();
 
@@ -20,7 +22,9 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
+app.use(passport.initialize());
 app.use("/api/auth", authRoutes);
+app.use("/api/oauth", oauthRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/products/quantity", productQuantityRoutes);
 app.use("/api/orders", orderRoutes);
