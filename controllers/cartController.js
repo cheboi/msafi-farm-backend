@@ -3,25 +3,19 @@ import * as cartModel from "../models/cart.js";
 export const getCart = async (req, res) => {
   const user_id = req.user.user_id;
   try {
-    const cart = await cartModel.getOrCreateCartByUserId(user_id);
-    const items = await cartModel.getCartItemsByCartId(cart.cart_id);
-    res.status(200).json({ cart, items });
+    const items = await cartModel.getCartItemsByUserId(user_id);
+    res.status(200).json({ items });
   } catch (err) {
-    console.error("Error getting cart:", err.message);
-    res.status(500).json({ error: "Server error while getting cart" });
+    console.error("Error fetching cart:", err.message);
+    res.status(500).json({ error: "Server error while fetching cart" });
   }
 };
 
 export const addItemToCart = async (req, res) => {
   const user_id = req.user.user_id;
-  const { product_id, quantity } = req.body;
+  const itemData = req.body;
   try {
-    const cart = await cartModel.getOrCreateCartByUserId(user_id);
-    const cartItem = await cartModel.addCartItem(
-      cart.cart_id,
-      product_id,
-      quantity
-    );
+    const cartItem = await cartModel.addOrUpdateCartItem(user_id, itemData);
     res.status(201).json({ message: "Item added to cart", cartItem });
   } catch (err) {
     console.error("Error adding item to cart:", err.message);
@@ -56,13 +50,12 @@ export const removeItemFromCart = async (req, res) => {
 };
 
 export const clearCartItems = async (req, res) => {
-  const user_id = req.params.user.user_id;
+  const user_id = req.user.user_id;
   try {
-    const cart = await cartModel.getOrCreateCartByUserId(user_id);
-    const clearedItems = await cartModel.clearCart(cart.cart_id);
-    res.status(200).json({ message: "cart cleared", clearedItems });
+    const clearedItems = await cartModel.clearCartForUser(user_id);
+    res.status(200).json({ message: "Cart cleared", clearedItems });
   } catch (err) {
-    console.error("Error clearing cart", err.message);
+    console.error("Error clearing cart:", err.message);
     res.status(500).json({ error: "Server error while clearing cart" });
   }
 };
