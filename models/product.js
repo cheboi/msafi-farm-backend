@@ -32,26 +32,26 @@ export const createProduct = async (product) => {
 
 export const getAllProducts = async () => {
   const result = await pool.query(`
-    SELECT 
-      p.id, 
-      p.name, 
-      p.category, 
-      p.subcategory, 
-      p.price, 
-      p.discount, 
-      p.image, 
-      p.stock, 
-      p.description, 
-      p.created_at, 
-      p.updated_at,
-      json_build_object(
-        'name', u.username,
-        'location', u.location,
-        'contact', u.contact
-      ) AS seller
-    FROM products p
-    LEFT JOIN users u ON p.seller_id = u.user_id
-    ORDER BY p.created_at DESC
+  SELECT 
+  p.id, 
+  p.name, 
+  p.category, 
+  p.subcategory, 
+  p.price, 
+  p.discount, 
+  p.image, 
+  p.stock, 
+  p.description, 
+  p.created_at, 
+  p.updated_at,
+  json_build_object(
+    'name', sd.name,
+    'location', sd.location,
+    'contact', sd.contact
+  ) AS seller
+FROM products p
+LEFT JOIN seller_details sd ON p.seller_id = sd.user_id
+ORDER BY p.created_at DESC;
   `);
   return result.rows;
 };
@@ -72,12 +72,12 @@ export const getProductById = async (id) => {
       p.created_at, 
       p.updated_at,
       json_build_object(
-        'name', u.username,
-        'location', u.location,
-        'contact', u.contact
+        'name', sd.name,
+        'location', sd.location,
+        'contact', sd.contact
       ) AS seller
     FROM products p
-    LEFT JOIN users u ON p.seller_id = u.user_id
+    LEFT JOIN seller_details sd ON p.seller_id = sd.user_id
     WHERE p.id = $1
   `,
     [id]
