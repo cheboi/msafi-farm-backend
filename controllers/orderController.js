@@ -6,6 +6,8 @@ import {
   updateOrderStatus,
   deleteOrder,
   trackOrder,
+  cancelOrder,
+  getOrdersByStatus,
 } from "../models/order.js";
 
 // Place an order
@@ -145,5 +147,29 @@ export const trackOrderById = async (req, res) => {
   } catch (error) {
     console.error("Error tracking order:", error);
     res.status(500).json({ error: "Server error while tracking order" });
+  }
+};
+
+export const cancelOrderRequest = async (req, res) => {
+  try {
+    const { order_id } = req.params;
+    const user_id = req.user.user_id;
+
+    const order = await cancelOrder(order_id, user_id);
+
+    if (!order) {
+      return res.status(400).json({
+        message:
+          "Order cannot be cancelled, Either is not yours or it does not exist",
+      });
+    }
+    res.status(200).json({
+      message: "Order cancelled successfully",
+      order,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error cancelling order", error: error.message });
   }
 };

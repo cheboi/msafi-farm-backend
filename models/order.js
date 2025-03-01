@@ -129,3 +129,27 @@ export const trackOrder = async (order_id) => {
   const { rows } = await pool.query(query, [order_id]);
   return rows[0];
 };
+
+// Cancel order
+export const cancelOrder = async (order_id, user_id) => {
+  const query = `
+    UPDATE orders 
+    SET order_status = 'cancelled' 
+    WHERE order_id = $1 AND user_id = $2 AND order_status = 'pending'
+    RETURNING *;
+  `;
+
+  const { rows } = await pool.query(query, [order_id, user_id]);
+  return rows[0];
+};
+
+//Filter orders by status
+export const getOrdersByStatus = async (status) => {
+  const query = `
+    SELECT * FROM orders 
+    WHERE order_status = $1
+    ORDER BY created_at DESC;
+  `;
+  const { rows } = await pool.query(query, [status]);
+  return rows;
+};
