@@ -8,6 +8,7 @@ import {
   trackOrderById,
   fetchUserOrders,
   cancelOrderRequest,
+  fetchOrdersByStatus,
 } from "../controllers/orderController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 import adminMiddleware from "../middleware/adminMiddleware.js";
@@ -27,5 +28,6 @@ router.patch(
 router.delete("/:order_id", authMiddleware, adminMiddleware, removeOrder);
 router.get("/track/:order_id", authMiddleware, trackOrderById);
 router.put("/cancel/:order_id", authMiddleware, cancelOrderRequest);
+router.get("/status/:status", authMiddleware, fetchOrdersByStatus);
 
 export default router;

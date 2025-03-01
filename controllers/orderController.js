@@ -173,3 +173,22 @@ export const cancelOrderRequest = async (req, res) => {
       .json({ message: "Error cancelling order", error: error.message });
   }
 };
+
+// Get orders by status
+export const fetchOrdersByStatus = async (req, res) => {
+  try {
+    const { status } = req.params;
+    const orders = await getOrdersByStatus(status);
+
+    if (orders.length === 0) {
+      return res
+        .status(404)
+        .json({ message: `No orders found with status: ${status}` });
+    }
+    res.status(200).json({ message: "Orders retrieved successfully", orders });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching orders", error: error.message });
+  }
+};
