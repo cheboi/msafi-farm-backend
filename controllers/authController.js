@@ -74,3 +74,19 @@ export const signin = async (req, res) => {
     res.status(500).json({ error: "Server error during signin" });
   }
 };
+
+export const signout = async (req, res) => {
+  try {
+    res.clearCookie("token");
+    res.status(200).json({
+      success: true,
+      message: "Successfully signed out",
+    });
+  } catch (error) {
+    console.error("Error signing out:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error signing out",
+    });
+  }
+};

@@ -12,14 +12,33 @@ export const getCart = async (req, res) => {
 };
 
 export const addItemToCart = async (req, res) => {
-  const user_id = req.user.user_id;
-  const itemData = req.body;
   try {
-    const cartItem = await cartModel.addOrUpdateCartItem(user_id, itemData);
-    res.status(201).json({ message: "Item added to cart", cartItem });
-  } catch (err) {
-    console.error("Error adding item to cart:", err.message);
-    res.status(500).json({ error: "Server error while adding item to cart" });
+    if (!req.user || !req.user.user_id) {
+      return res
+        .status(401)
+        .json({ success: false, message: "User not authenticated" });
+    }
+
+    const user_id = req.user.user_id;
+    const { product_id, quantity } = req.body;
+
+    if (!product_id || !quantity) {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message: "Product ID and quantity are required",
+        });
+    }
+
+    const newItem = await Cart.create({ user_id, product_id, quantity });
+
+    res
+      .status(201)
+      .json({ success: true, message: "Item added to cart", data: newItem });
+  } catch (error) {
+    console.error("Error adding item to cart:", error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
