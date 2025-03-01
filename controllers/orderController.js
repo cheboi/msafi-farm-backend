@@ -83,7 +83,7 @@ export const fetchOrderById = async (req, res) => {
   }
 };
 
-// Update order status (Admin)
+// Update order status
 export const modifyOrderStatus = async (req, res) => {
   try {
     const { order_id } = req.params;
@@ -111,7 +111,7 @@ export const modifyOrderStatus = async (req, res) => {
   }
 };
 
-// Delete an order (Admin)
+// Delete an order Admin Only
 export const removeOrder = async (req, res) => {
   try {
     const { order_id } = req.params;
@@ -139,7 +139,7 @@ export const trackOrderById = async (req, res) => {
       order_id: order.id,
       user_id: order.user_id,
       total_price: order.total_price,
-      status: order.status,
+      status: order.order_status,
       created_at: order.created_at,
     });
   } catch (error) {

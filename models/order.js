@@ -77,7 +77,7 @@ export const getOrdersByUser = async (user_id) => {
       json_agg(json_build_object(
         'product_id', oi.product_id,
         'quantity', oi.quantity,
-        'price', oi.price
+        'Product_price', oi.product_price
       )) AS order_items
     FROM orders o
     LEFT JOIN order_items oi ON o.order_id = oi.order_id
@@ -95,7 +95,7 @@ export const getOrderById = async (order_id) => {
       json_agg(json_build_object(
         'product_id', oi.product_id,
         'quantity', oi.quantity,
-        'price', oi.price
+        'product_price', oi.product_price
       )) AS order_items
     FROM orders o
     LEFT JOIN order_items oi ON o.order_id = oi.order_id
